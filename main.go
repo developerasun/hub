@@ -37,6 +37,11 @@ func main() {
 		GenerateApiKey(ctx, db)
 	})
 
+	api.GET("/confirm", func(ctx *gin.Context) {
+		isValid := IsValidKey(ctx, db)
+		ctx.JSON(http.StatusOK, gin.H{"isValid": isValid})
+	})
+
 	e.Run(":3010")
 }
 
@@ -93,4 +98,25 @@ func GenerateApiKey(ctx *gin.Context, db *gorm.DB) {
 
 		ctx.Error(err)
 	}
+}
+
+func IsValidKey(ctx *gin.Context, db *gorm.DB) (isValid bool) {
+	code := ctx.GetHeader(models.AuthHeader)
+	if code == "" {
+		ctx.Error(errors.New("missing api key header"))
+		return false
+	}
+
+	var apiKey models.ApiKey
+	if err := db.Where("code = ?", code).First(&apiKey).Error; err != nil {
+		ctx.Error(gorm.ErrRecordNotFound)
+		return false
+	}
+
+	if time.Now().Unix() > apiKey.ExpiredAt.Unix() {
+		ctx.Error(errors.New("expired api key"))
+		return false
+	}
+
+	return true
 }
