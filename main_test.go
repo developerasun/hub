@@ -28,7 +28,8 @@ func setup(t *testing.T) (*gin.Engine, *gorm.DB) {
 
 	r := gin.Default()
 	r.POST("/api/generate", func(ctx *gin.Context) {
-		GenerateApiKey(ctx, db)
+		code, done := GenerateApiKey(ctx, db)
+		ctx.JSON(http.StatusOK, gin.H{"code": code, "done": done})
 	})
 	r.GET("/api/confirm", func(ctx *gin.Context) {
 		isValid := IsValidKey(ctx, db)
@@ -97,5 +98,6 @@ func generateApiKey(r *gin.Engine, t *testing.T) {
 	req.Header.Set("Origin", "https://test.com")
 	r.ServeHTTP(w, req)
 
+	t.Log(w.Body.String())
 	require.True(t, w.Code == http.StatusOK)
 }

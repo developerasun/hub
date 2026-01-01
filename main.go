@@ -34,7 +34,8 @@ func main() {
 	})
 
 	api.POST("/generate", func(ctx *gin.Context) {
-		GenerateApiKey(ctx, db)
+		code, done := GenerateApiKey(ctx, db)
+		ctx.JSON(http.StatusOK, gin.H{"code": code, "done": done})
 	})
 
 	api.GET("/confirm", func(ctx *gin.Context) {
@@ -45,7 +46,7 @@ func main() {
 	e.Run(":3010")
 }
 
-func GenerateApiKey(ctx *gin.Context, db *gorm.DB) {
+func GenerateApiKey(ctx *gin.Context, db *gorm.DB) (code string, done bool) {
 	var GenerateApiKeyRequest struct {
 		Name        string
 		Description string
@@ -55,19 +56,19 @@ func GenerateApiKey(ctx *gin.Context, db *gorm.DB) {
 	}
 
 	origin := ctx.Request.Header.Get("Origin")
+	apiKey := models.ApiKey{
+		Code:      uuid.New().String(),
+		ExpiredAt: time.Now().AddDate(0, 1, 0),
+	}
 
 	err := db.Transaction(func(tx *gorm.DB) error {
-		apiKey := &models.ApiKey{
-			Code:      uuid.New().String(),
-			ExpiredAt: time.Now().AddDate(0, 1, 0),
-		}
 		if err := tx.Clauses(
 			clause.OnConflict{UpdateAll: true},
-		).Create(apiKey).Error; err != nil {
+		).Create(&apiKey).Error; err != nil {
 			return err
 		}
 
-		client := &models.Client{
+		client := models.Client{
 			ApiKeyID:    apiKey.ID,
 			Name:        GenerateApiKeyRequest.Name,
 			Description: GenerateApiKeyRequest.Description,
@@ -76,11 +77,11 @@ func GenerateApiKey(ctx *gin.Context, db *gorm.DB) {
 			return err
 		}
 
-		request := &models.Request{
+		request := models.Request{
 			ClientID: client.ID,
 			Origin:   origin,
 		}
-		if err := tx.Create(request).Error; err != nil {
+		if err := tx.Create(&request).Error; err != nil {
 			return err
 		}
 
@@ -97,7 +98,10 @@ func GenerateApiKey(ctx *gin.Context, db *gorm.DB) {
 		}
 
 		ctx.Error(err)
+		return "", false
 	}
+
+	return apiKey.Code, true
 }
 
 func IsValidKey(ctx *gin.Context, db *gorm.DB) (isValid bool) {
