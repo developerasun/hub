@@ -1,0 +1,7 @@
+:3013 {
+	respond "hi"
+
+	handle /api/* {
+		reverse_proxy keydian_backend:3014
+	}
+}

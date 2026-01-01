@@ -41,3 +41,5 @@ _volume/_logs/*
 *.sh
 *.md
 docs/*.png
+
+config

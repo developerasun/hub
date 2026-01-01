@@ -14,6 +14,6 @@ RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -o ./server.run ./main.go
 FROM alpine:3.22 AS runner
 WORKDIR /keydian
 COPY --from=runtime /keydian/server.run .
-EXPOSE 3013
+EXPOSE 3014
 
 CMD ["./server.run"]

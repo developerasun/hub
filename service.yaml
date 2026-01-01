@@ -5,13 +5,15 @@ networks:
     driver: overlay
 
 services:
-  backend:
-    image: keydian-backend:latest
-    # open ports in overlay network to communicate each other
+  proxy:
+    # env_file: ".run.env"
+    image: ghcr.io/caddybuilds/caddy-cloudflare:alpine
     ports:
       - "3013:3013"
     volumes:
-      - ./keydian.db:/keydian/keydian.db
+      # - ../../_volume/caddy/data/:/data
+      - ./config:/config
+      # - ../../_volume/caddy/site:/srv
     networks:
       - webapp
       - common
@@ -25,11 +27,13 @@ services:
         window: 60s
       resources:
         reservations:
-          cpus: "0.5"
-          memory: 512M
+          cpus: "0.1"
+          memory: 256M
         limits:
-          cpus: "1"
-          memory: 1024M
+          cpus: "0.3"
+          memory: 512M
+    command: caddy run --config /config/Caddyfile --adapter caddyfile --watch
+
   servertunnel:
     image: cloudflare/cloudflared:latest
     env_file: ".run.env"

@@ -43,7 +43,7 @@ func main() {
 		ctx.JSON(http.StatusOK, gin.H{"isValid": isValid})
 	})
 
-	e.Run(":3013")
+	e.Run(":3014")
 }
 
 func GenerateApiKey(ctx *gin.Context, db *gorm.DB) (code string, done bool) {

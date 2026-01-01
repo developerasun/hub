@@ -47,4 +47,4 @@ todo.md
 
 *.run
 
-client/wasm/
+config/caddy
