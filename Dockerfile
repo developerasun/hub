@@ -1,4 +1,4 @@
-FROM golang:1.24-alpine as runtime
+FROM golang:1.25-alpine AS runtime
 RUN apk add --no-cache gcc musl-dev sqlite-dev
 WORKDIR /keydian
 
@@ -8,10 +8,10 @@ RUN go mod download
 
 COPY . .
 RUN ls -al
-RUN cd cmd && CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -o ./server.run ./main.go
+RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -o ./server.run ./main.go
 
 # @dev multi-stage bulid for less image size
-FROM alpine:3.22 as runner
+FROM alpine:3.22 AS runner
 WORKDIR /keydian
 COPY --from=runtime /keydian/server.run .
 EXPOSE 3013
