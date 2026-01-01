@@ -10,6 +10,8 @@ services:
     # open ports in overlay network to communicate each other
     ports:
       - "3013:3013"
+    volumes:
+      - ./keydian.db:/keydian/keydian.db
     networks:
       - webapp
       - common
