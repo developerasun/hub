@@ -12,9 +12,9 @@
 	handle @teapot {
 		respond "I'm a teapot"
 	}
-
+	
 	handle @tool-apikey {
-		reverse_proxy keydian_backend:3014
+		respond "keydian"
 	}
 	handle @tool-data {
 		respond "komitrack"
@@ -24,12 +24,12 @@
 		respond "botbot"
 	}
 	handle @app-minlink {
-		respond "minlink"
+		reverse_proxy hub_minlink:3015
 	}
 	handle @app-hexbook {
-		respond "hexbook"
+		reverse_proxy hub_hexbook:3016
 	}
-	handle @app-botbot {
+	handle @app-ricktcal-worldcup {
 		respond "ricktcal-worldcup"
 	}
 }
