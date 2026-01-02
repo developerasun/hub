@@ -1,7 +1,35 @@
 :3013 {
-	respond "hi"
+	respond "ok"
 
-	handle /api/* {
+	@teapot host teapot.developerasun.dpdns.org
+	@tool-apikey host keydian.developerasun.dpdns.org
+	@tool-data host komitrack.developerasun.dpdns.org
+	@app-botbot host botbot.developerasun.dpdns.org
+	@app-minlink host minlink.developerasun.dpdns.org
+	@app-hexbook host hexbook.developerasun.dpdns.org
+	@app-ricktcal-worldcup host ricktcal-worldcup.developerasun.dpdns.org
+	
+	handle @teapot {
+		respond "I'm a teapot"
+	}
+
+	handle @tool-apikey {
 		reverse_proxy keydian_backend:3014
+	}
+	handle @tool-data {
+		respond "komitrack"
+	}
+
+	handle @app-botbot {
+		respond "botbot"
+	}
+	handle @app-minlink {
+		respond "minlink"
+	}
+	handle @app-hexbook {
+		respond "hexbook"
+	}
+	handle @app-botbot {
+		respond "ricktcal-worldcup"
 	}
 }
