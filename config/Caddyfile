@@ -1,27 +1,18 @@
 :3013 {
-	respond "ok"
+	root * /data
+	try_files /domains.json
 
-	@teapot host teapot.developerasun.dpdns.org
-	@tool-apikey host keydian.developerasun.dpdns.org
-	@tool-data host komitrack.developerasun.dpdns.org
+	file_server
+
 	@app-botbot host botbot.developerasun.dpdns.org
 	@app-minlink host minlink.developerasun.dpdns.org
 	@app-hexbook host hexbook.developerasun.dpdns.org
 	@app-ricktcal-worldcup host ricktcal-worldcup.developerasun.dpdns.org
-	
-	handle @teapot {
-		respond "I'm a teapot"
-	}
-	
-	handle @tool-apikey {
-		respond "keydian"
-	}
-	handle @tool-data {
-		respond "komitrack"
-	}
+	@app-meowrun host meowrun.developerasun.dpdns.org
+	@app-owlly host owlly.developerasun.dpdns.org
 
 	handle @app-botbot {
-		respond "botbot"
+		redir https://github.com/developerasun/botbot{uri} permanent
 	}
 	handle @app-minlink {
 		reverse_proxy hub_minlink:3015
@@ -30,6 +21,12 @@
 		reverse_proxy hub_hexbook:3016
 	}
 	handle @app-ricktcal-worldcup {
-		respond "ricktcal-worldcup"
+		redir http://worldcup.developerasun.dpdns.org{uri} permanent
+	}
+	handle @app-owlly {
+		redir https://github.com/developerasun/owlly{uri} permanent
+	}
+	handle @app-meowrun {
+		redir https://github.com/developerasun/MeowRun{uri} permanent
 	}
 }
