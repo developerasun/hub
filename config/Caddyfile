@@ -1,9 +1,5 @@
 :3013 {
-	root * /data
-	try_files /domains.json
-
-	file_server
-
+	@app-entrypoint host hub.developerasun.dpdns.org
 	@app-botbot host botbot.developerasun.dpdns.org
 	@app-minlink host minlink.developerasun.dpdns.org
 	@app-hexbook host hexbook.developerasun.dpdns.org
@@ -11,6 +7,17 @@
 	@app-meowrun host meowrun.developerasun.dpdns.org
 	@app-owlly host owlly.developerasun.dpdns.org
 
+	handle @app-entrypoint {
+		root * /data
+
+		handle / {
+			try_files /domains.json
+			file_server
+		}
+		handle {
+			respond 403
+		}
+	}
 	handle @app-botbot {
 		redir https://github.com/developerasun/botbot{uri} permanent
 	}
