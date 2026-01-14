@@ -6,9 +6,10 @@ Mainly used for reverse proxying my side projects without exposing port and ip t
 
 | Project           | Deployment |
 | ----------------- | ---------- |
+| kiwiwi            | standalone(CLI) |
 | botbot            | on-premise |
 | minlink           | on-premise |
 | hexbook           | on-premise |
 | ricktcal-worldcup | cloud      |
-| owlly             | standalone |
-| meowrun           | standalone |
+| owlly             | standalone(Desktop) |
+| meowrun           | standalone(Game) |

@@ -1,5 +1,6 @@
 :3013 {
 	@app-entrypoint host hub.developerasun.dpdns.org
+	@app-kiwiwi host kiwiwi.developerasun.dpdns.org
 	@app-botbot host botbot.developerasun.dpdns.org
 	@app-minlink host minlink.developerasun.dpdns.org
 	@app-hexbook host hexbook.developerasun.dpdns.org
@@ -17,6 +18,9 @@
 		handle {
 			respond 403
 		}
+	}
+	handle @app-kiwiwi {
+		redir https://github.com/developerasun/kiwiwi{uri} permanent
 	}
 	handle @app-botbot {
 		redir https://github.com/developerasun/botbot{uri} permanent
