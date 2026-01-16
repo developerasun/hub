@@ -15,8 +15,16 @@
 			try_files /domains.json
 			file_server
 		}
+		handle /download {
+					header Content-Disposition "attachment; filename=example.txt"
+					try_files /example.txt
+					file_server
+		}
 		handle /coffee {
-			respond https://forms.gle/QrFAaXgbLnsxywhA7
+			redir https://forms.gle/QrFAaXgbLnsxywhA7 permanent
+		}
+		handle /profile {
+			redir https://developerasun.github.io/developerasun{uri} permanent
 		}
 		handle {
 			respond 403
