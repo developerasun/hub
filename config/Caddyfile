@@ -15,6 +15,11 @@
 			try_files /domains.json
 			file_server
 		}
+		handle /health {
+			respond "ok" 200 {
+				close
+			}
+		}
 		handle /download {
 					header Content-Disposition "attachment; filename=example.txt"
 					try_files /example.txt
