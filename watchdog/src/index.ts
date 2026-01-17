@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { env } from "cloudflare:workers";
+import { payload } from './template'
 
 interface Env {}
 
@@ -13,9 +14,22 @@ app.get("/health", (c) => {
   return c.text("ok");
 });
 
-const recover = () => healtiness.set("status", true)
-const reset = () => healtiness.set("status", false)
 const skippable = () => healtiness.get("status")!
+const recover = async () => {
+  const current = skippable()
+  if (current == false) {
+    await fetch(webhook, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(payload.restore)
+    })
+  }
+
+  healtiness.set("status", true)
+}
+const reset = () => healtiness.set("status", false)
 
 const alert = async () => {
   if (skippable()) {
@@ -27,19 +41,7 @@ const alert = async () => {
     headers: {
       "content-type": "application/json",
     },
-    body: JSON.stringify({    
-      embeds: [{
-        title: "🚨 Server Offline Alert",
-        color: 15158332, // 빨간색 (Hex: #E74C3C)
-        fields: [
-          { name: "Server Name", value: "hub_proxy", inline: true },
-          { name: "Status", value: "DOWN", inline: true },
-          { name: "Last Heartbeat", value: new Date().toLocaleString("ko-KR", {
-            timeZone: "Asia/Seoul"
-          }), inline: false },
-          { name: "Description", value: "The deadman's switch was triggered. No ping received in the last 3 minutes." }
-        ],
-      }]})
+    body: JSON.stringify(payload.alert)
   })
   return
 }
@@ -63,7 +65,7 @@ export default {
 
         const response = await fetch(proxy);
         if (response.status == 200) {
-          recover()
+          await recover()
         } else {
           reset()
         }
