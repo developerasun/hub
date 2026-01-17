@@ -6,34 +6,40 @@ interface Env {}
 const devRun = env.PRODUCTION === "false"
 const webhook = env.WEBHOOK_ENDPOINT
 const proxy = env.PROXY_ENDPOINT
+const healtiness = new Map<string, boolean>([["status", false]])
 const app = new Hono<{ Bindings: CloudflareBindings }>();
 
 app.get("/health", (c) => {
   return c.text("ok");
 });
 
+const recover = () => healtiness.set("status", true)
+const reset = () => healtiness.set("status", false)
+const skippable = () => healtiness.get("status")!
+
 const alert = async () => {
-  const messsage = {
-    embeds: [{
-      title: "🚨 Server Offline Alert",
-      color: 15158332, // 빨간색 (Hex: #E74C3C)
-      fields: [
-        { name: "Server Name", value: "hub_proxy", inline: true },
-        { name: "Status", value: "DOWN", inline: true },
-        { name: "Last Heartbeat", value: new Date().toLocaleString("ko-KR", {
-          timeZone: "Asia/Seoul"
-        }), inline: false },
-        { name: "Description", value: "The deadman's switch was triggered. No ping received in the last 3 minutes." }
-      ],
-    }]
-  };
+  if (skippable()) {
+    return
+  }
 
   await fetch(webhook, {
     method: "POST",
     headers: {
       "content-type": "application/json",
     },
-    body: JSON.stringify(messsage)
+    body: JSON.stringify({    
+      embeds: [{
+        title: "🚨 Server Offline Alert",
+        color: 15158332, // 빨간색 (Hex: #E74C3C)
+        fields: [
+          { name: "Server Name", value: "hub_proxy", inline: true },
+          { name: "Status", value: "DOWN", inline: true },
+          { name: "Last Heartbeat", value: new Date().toLocaleString("ko-KR", {
+            timeZone: "Asia/Seoul"
+          }), inline: false },
+          { name: "Description", value: "The deadman's switch was triggered. No ping received in the last 3 minutes." }
+        ],
+      }]})
   })
   return
 }
@@ -55,12 +61,15 @@ export default {
           break
         }
 
-        // @dev alert an fire and ignore
         const response = await fetch(proxy);
-        if (response.status != 200) {
-          await alert()
-          break
+        if (response.status == 200) {
+          recover()
+        } else {
+          reset()
         }
+        // @dev alert an fire and ignore
+        await alert()
+        break
     }
     console.info("cron processed");
   },
