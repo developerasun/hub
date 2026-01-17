@@ -15,7 +15,7 @@ app.get("/health", (c) => {
 });
 
 const skippable = () => healtiness.get("status")!
-const recover = async () => {
+const recover = async (time: string) => {
   const current = skippable()
   if (current == false) {
     await fetch(webhook, {
@@ -23,7 +23,7 @@ const recover = async () => {
       headers: {
         "content-type": "application/json",
       },
-      body: JSON.stringify(payload.restore)
+      body: JSON.stringify(payload.restore(time))
     })
   }
 
@@ -31,7 +31,7 @@ const recover = async () => {
 }
 const reset = () => healtiness.set("status", false)
 
-const alert = async () => {
+const alert = async (time: string) => {
   if (skippable()) {
     return
   }
@@ -41,7 +41,7 @@ const alert = async () => {
     headers: {
       "content-type": "application/json",
     },
-    body: JSON.stringify(payload.alert)
+    body: JSON.stringify(payload.alert(time))
   })
   return
 }
@@ -58,19 +58,23 @@ export default {
     switch (controller.cron) {
       // @dev healthcheck per 3 min
       case "*/3 * * * *":
+        // @dev should not handle timestamp globally. see here: https://community.cloudflare.com/t/date-in-worker-is-reporting-thu-jan-01-1970-0000-gmt-0000/236503
+        const unixTimestamp = Math.floor(Date.now() / 1000);
+        const time = `<t:${unixTimestamp}:R>`
+
         if (devRun) {
-          await alert()
+          await alert(time)
           break
         }
 
         const response = await fetch(proxy);
         if (response.status == 200) {
-          await recover()
+          await recover(time)
         } else {
           reset()
         }
         // @dev alert an fire and ignore
-        await alert()
+        await alert(time)
         break
     }
     console.info("cron processed");
