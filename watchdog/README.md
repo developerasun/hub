@@ -1,7 +1,14 @@
 # hub_watchdog
 
+
 a `hono` based http server with cron scheduler.
 mainly to monitor `hub_proxy`.
+
+<div align="center">
+
+<img src="./docs/2.jpg" width="49%" />
+
+</div>
 
 ## usage
 
