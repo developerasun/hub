@@ -1,8 +1,8 @@
 import { Hono } from "hono";
 import { env } from "cloudflare:workers";
 import { payload } from './template'
-
-interface Env {}
+import { getConnection, HUMAN_BOOLEAN, tHealthiness } from "./database/schema";
+import { eq } from "drizzle-orm";
 
 const devRun = env.PRODUCTION === "false"
 const webhook = env.WEBHOOK_ENDPOINT
@@ -52,9 +52,25 @@ export default {
 
   async scheduled(
     controller: ScheduledController,
-    env: Env,
+    env: Cloudflare.Env,
     ctx: ExecutionContext,
   ) {
+    const {connection} = await getConnection(env.DB)
+    const rows = await connection.run("select 1 from healthiness") 
+    const invalidRowCount = rows.results.length >= 2 || rows.results.length == 0
+
+    if (invalidRowCount) {
+      await connection.run("drop table healthiness")
+      await connection.run(`
+        CREATE TABLE healthiness (
+          id integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+          status integer DEFAULT 0 NOT NULL
+        );
+      `)
+      await connection.insert(tHealthiness).values({ status: HUMAN_BOOLEAN.false })
+      console.info("scheduled: Healthness table row sync fixed.")
+    }
+    
     switch (controller.cron) {
       // @dev healthcheck per 3 min
       case "*/3 * * * *":
