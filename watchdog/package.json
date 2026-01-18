@@ -5,12 +5,17 @@
 		"dev": "wrangler dev",
 		"dev:cron": "wrangler dev --port 8787 --test-scheduled",
 		"deploy": "wrangler deploy --minify",
-		"cf-typegen": "wrangler types --env-interface CloudflareBindings"
+		"gen:type": "wrangler types --env-interface CloudflareBindings",
+    "db:schema": "pnpm exec drizzle-kit generate",
+    "db:local": "wrangler d1 execute ricktcal-db --local --file=./src/database/migrations/0000_cool_martin_li.sql",
+    "db:remote": "wrangler d1 execute ricktcal-db --remote --file=./src/database/migrations/0000_cool_martin_li.sql"
 	},
 	"dependencies": {
-		"hono": "^4.11.4"
+		"hono": "^4.11.4",
+		"drizzle-orm": "^0.44.3"
 	},
 	"devDependencies": {
-		"wrangler": "^4.59.2"
+		"wrangler": "^4.59.2",
+		"drizzle-kit": "^0.31.4"
 	}
 }
