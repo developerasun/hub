@@ -1,5 +1,6 @@
 :3013 {
 	@app-entrypoint host hub.developerasun.dpdns.org
+	@app-hub-watchdog host hub-watchdog.developerasun.dpdns.org
 	@app-kiwiwi host kiwiwi.developerasun.dpdns.org
 	@app-botbot host botbot.developerasun.dpdns.org
 	@app-minlink host minlink.developerasun.dpdns.org
@@ -34,6 +35,9 @@
 		handle {
 			respond 403
 		}
+	}
+	handle @app-hub-watchdog {
+		redir https://github.com/developerasun/hub/tree/main/watchdog{uri} permanent
 	}
 	handle @app-kiwiwi {
 		redir https://github.com/developerasun/kiwiwi{uri} permanent
