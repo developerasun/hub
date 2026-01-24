@@ -1,6 +1,5 @@
 # hub_watchdog
 
-
 a `hono` based http server with cron scheduler.
 mainly to monitor `hub_proxy`.
 
@@ -11,7 +10,6 @@ mainly to monitor `hub_proxy`.
 </div>
 
 ## usage
-
 
 run a local worker with testing
 
