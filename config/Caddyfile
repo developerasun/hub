@@ -1,5 +1,6 @@
 :3013 {
 	@app-entrypoint host hub.developerasun.dpdns.org
+	@app-lollama host lollama.developerasun.dpdns.org
 	@app-hub-watchdog host hub-watchdog.developerasun.dpdns.org
 	@app-kiwiwi host kiwiwi.developerasun.dpdns.org
 	@app-botbot host botbot.developerasun.dpdns.org
@@ -35,6 +36,9 @@
 		handle {
 			respond 403
 		}
+	}
+	handle @app-lollama {
+		redir https://github.com/developerasun/Lollama{uri} permanent
 	}
 	handle @app-hub-watchdog {
 		redir https://github.com/developerasun/hub/tree/main/watchdog{uri} permanent
