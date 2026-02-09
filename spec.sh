@@ -21,7 +21,13 @@ free -h
 echo
 
 echo "----------------------------------------"
-echo "[HOST HDD: $(date '+%Y-%m-%d %H:%M:%S')]"
+echo "[HOST HDD(free): $(date '+%Y-%m-%d %H:%M:%S')]"
 echo "----------------------------------------"
 df -h
+echo
+
+echo "----------------------------------------"
+echo "[HOST HDD(usage): $(date '+%Y-%m-%d %H:%M:%S')]"
+echo "----------------------------------------"
+du -sh /var/log/syslog /var/log/kern.log
 echo
