@@ -9,6 +9,18 @@ Developerasun's edge-proxy server with the help of `Caddy` and `Cloudflare`.
 
 Mainly used for reverse proxying my side projects without exposing port and ip to the internet.
 
+_limitation_
+
+cloudflare tunnel requires a stable internet connection, and sometimes internet connected to my on-premise device becomes unstable.
+
+<div align="center">
+
+<img src="./docs/1.png" width="49%" />
+
+</div>
+
+historically, it will take around 10 minutes to get the connection back online in my setup.
+
 ## List of projects
 
 | Project           | Deployment          | Role              |
