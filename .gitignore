@@ -48,3 +48,8 @@ todo.md
 *.run
 
 config/caddy
+
+.yarn
+node_modules
+.next
+.contentlayer
