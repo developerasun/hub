@@ -12,7 +12,7 @@ const siteMetadata = {
   socialBanner: `${process.env.BASE_PATH || ''}/static/images/twitter-card.png`,
   email: 'address@yoursite.com',
   github: 'https://github.com/developerasun',
-  threads: 'https://www.threads.net',
+  threads: 'https://www.threads.com/@developerasun',
   // x: 'https://twitter.com/x',
   // mastodon: 'https://mastodon.social/@mastodonuser',
   // twitter: 'https://twitter.com/Twitter',
