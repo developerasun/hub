@@ -14,18 +14,6 @@ export default function Page() {
     <>
       <AuthorLayout content={mainContent}>
         <MDXLayoutRenderer code={author.body.code} />
-
-        <h2 id="contact">Contact</h2>
-        <iframe
-          src="https://docs.google.com/forms/d/e/1FAIpQLSe61bU-DfTyI3QaBpCT9YFFfnOTl3ER4jJ-JWQ9_hXcNSjnKQ/viewform?embedded=true"
-          width="100%"
-          height="1398"
-          frameBorder="0"
-          marginHeight={0}
-          marginWidth={0}
-        >
-          loading
-        </iframe>
       </AuthorLayout>
     </>
   )
